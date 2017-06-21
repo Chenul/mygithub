@@ -1,0 +1,11 @@
+prefix=/home/john/work/new_sotf/freetype/freetype-2.3.0/_install
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: FreeType 2
+Description: A free, high-quality, and portable font engine.
+Version: 9.11.3
+Requires:
+Libs: -L${libdir} -lfreetype  
+Cflags: -I${includedir}/freetype2 -I${includedir}

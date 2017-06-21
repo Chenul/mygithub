@@ -1,0 +1,59 @@
+
+
+CROSSCOMPILE := arm-none-linux-gnueabi-
+
+CC := $(CROSSCOMPILE)gcc
+CPP := $(CROSSCOMPILE)g++
+ASM := $(CROSSCOMPILE)as
+LD := $(CROSSCOMPILE)ld
+
+CPU = CORTEX-A8
+CFLAGS =  -g -c -W -O0 -DS5PV210 -I . -I $(PWD)/freetype2
+
+
+SRC = \
+	v4l2_framebuffer.c \
+	deviceCtrl.c \
+
+	
+FIMC_SRC := \
+	fimc/fimcCtrl.c \
+
+
+OBJS = \
+	$(patsubst %.c, %.o, $(filter %.c, $(SRC))) \
+	$(patsubst %.cpp, %.o, $(filter %.cpp, $(SRC))) \
+	$(patsubst %.s, %.o, $(filter %.s, $(SRC)))
+
+FIMC_OBJ = \
+	$(patsubst %.c, %.o, $(filter %.c, $(FIMC_SRC))) \
+	
+
+
+v4l-jpeg_key: $(OBJS)
+	@echo "compile"
+	$(CC) $(LFLAGS_DRAM) $(LIBS) -o $@  $^  -L. -ljpeg -lfreetype
+	@echo "done"
+
+fimc: $(FIMC_OBJ)
+	@echo "fimc"
+	$(CC) $(LFLAGS_DRAM) $(LIBS) -o fimc/$@  $^
+	@echo "done"
+.PHONY:clean
+clean:
+	rm *.o v4l-jpeg_key
+
+ 
+
+	
+%.o: %.cpp
+	$(CPP) $(CFLAGS) $< -o $@
+
+%.o: %.c
+	$(CC)  $(CFLAGS) $< -o $@
+
+%.o: %.s
+	$(ASM) $(AFLAGS) $< -o $@
+	
+	
+	
